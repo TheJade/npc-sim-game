@@ -5,13 +5,18 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 800
  
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale_to=(0,0)):
+    def __init__(self, x, y, img_path, scale_to=(0,0)):
         super().__init__()
  
-        img = pygame.image.load(r'C:\Users\Jade\Documents\GitHub\flare\jades game\npc sim\assets\Lively_NPCs_v3.0\individual sprites\medieval\elder\elder_1.png')
-        if scale_to[0] != 0:
-            img = pygame.transform.scale(img, scale_to)
-        self.image = img
+        self.scale_to = scale_to
+        self.img_path = img_path
+
+        path = os.getcwd() + img_path
+        self.img_list = os.listdir(path)
+
+        self.image_num = 0
+        self.image = pygame.image.load(os.getcwd()+self.img_path+'/'+self.img_list[0])
+        self.animate()
         
         self.rect = self.image.get_rect()
  
@@ -65,3 +70,17 @@ class Player(pygame.sprite.Sprite):
  
         self.speed_y = 0
         self.can_jump = True
+
+    def on_object_collide(self, object):
+        if self.rect.y-20 < object.rect.y - self.rect.height:
+            self.rect.y = object.rect.y - self.rect.height
+        elif self.rect.x-20 < object.rect.x - self.rect.width:
+            self.rect.x = object.rect.x - self.rect.width
+        self.speed_y = 0
+        self.can_jump = True
+
+    def animate(self):
+        self.image = pygame.image.load(os.getcwd()+self.img_path+'/'+self.img_list[self.image_num])
+        if self.scale_to[0] != 0:
+            self.image = pygame.transform.scale(self.image, self.scale_to)
+        self.image_num = (self.image_num + 1) % len(self.img_list)
