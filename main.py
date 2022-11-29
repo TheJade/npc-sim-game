@@ -66,10 +66,15 @@ platforms.add(Platform(SCREEN_WIDTH, SCREEN_HEIGHT-PLATFORM_HEIGHT, SCREEN_WIDTH
                         
 
 enemies = pygame.sprite.Group()
-enemies.add(Enemy(750, 410))
+enemy = Enemy(100, 500,
+                img_path=r'\assets\Lively_NPCs_v3.0\individual sprites\medieval\adventurer_01',
+                scale_to=(PLATFORM_HEIGHT*2, PLATFORM_HEIGHT*2))
+enemies.add(enemy)
 
 # Create the player sprite and add it to the players sprite group
-player = Player(400, 500, img_path=r'/assets\Lively_NPCs_v3.0\individual sprites\medieval\jester', scale_to=(PLATFORM_HEIGHT*2, PLATFORM_HEIGHT*2))
+player = Player(400, 500, 
+                img_path=r'/assets\Lively_NPCs_v3.0\individual sprites\medieval\jester', 
+                scale_to=(PLATFORM_HEIGHT*2, PLATFORM_HEIGHT*2))
 players = pygame.sprite.Group()
 players.add(player)
 
@@ -107,13 +112,13 @@ while True:
     # Mouse events
     mouse_pos = pygame.mouse.get_pos()  # Get position of mouse as a tuple representing the
     # (x, y) coordinate
- 
+
     mouse_buttons = pygame.mouse.get_pressed()
     if mouse_buttons[0]:  # If left mouse pressed
         player.teleport(mouse_pos[0], mouse_pos[1])
     if mouse_buttons[2]:  # If right mouse pressed
         pass  # Replace this line
- 
+
     """
     UPDATE section - manipulate everything on the screen
     """
@@ -128,6 +133,8 @@ while True:
     # every so often events
     if animation_ticker > FRAME_RATE*(0.1):
         player.animate()
+        animation_ticker = 0
+        enemy.animate()
         animation_ticker = 0
     animation_ticker += 1
 
@@ -149,7 +156,7 @@ while True:
     for platform in hit_platforms:
         player.on_platform_collide(platform)
 
-    
+
 
     hit_objects = pygame.sprite.spritecollide(player, objects, False)
     for object in hit_objects:

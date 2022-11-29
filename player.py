@@ -32,6 +32,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         # Make the player fall due to gravity
         self.fall()
+        if self.rect.x < 200:
+            self.kill()
+            print("YOU ARE DEAD")
  
     def move(self, x_change, y_change):
         self.rect.x += x_change
